@@ -1,0 +1,7 @@
+apiVersion: v1
+description: A Helm chart to deploy Apache OpenWhisk on ICp
+name: openwhisk
+version: 0.1.0
+keywords:
+  - Apache OpenWhisk
+  - IBM Cloud Private

@@ -1,0 +1,15 @@
+{
+  "name": "monitor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {},
+  "license": "MIT",
+  "dependencies": {
+    "eval": "^0.1.2",
+    "moment": "^2.18.1",
+    "openwhisk": "^3.7.0",
+    "socket.io-client": "^2.0.3",
+    "superagent": "^3.6.0",
+    "technicalindicators": "^1.0.20"
+  }
+}
