@@ -98,18 +98,14 @@ function getCurrencyCode(currencyName){
   // return _.find(foreignCurrencyList, elm => elm.desc === currencyName).code
 }
 
-const ow = (inCluster) => {
-  //TODO: a better way to pass ow api host
-  let apihost =  "https://192.168.64.238:32396"
+const ow = (apihost, api_key) => {
+  //a better way to pass ow api host
+  // The Env variable approach doesn't work as even run inside the cluster, the whisk hostname is still not resolvable! 
+  // sample: apihost= https://nginx.openwhisk:443 api_key= 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP",
 
-  // even run inside the cluster is still not resolvable!
-  
-  // if(inCluster){
-  //   apihost = "https://nginx.openwhisk"
-  // }
   return openwhisk({
     apihost: apihost,
-    api_key: "23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP",
+    api_key: api_key,
     ignore_certs: true
   })
 }

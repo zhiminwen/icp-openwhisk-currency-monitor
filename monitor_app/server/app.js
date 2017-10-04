@@ -52,6 +52,8 @@ app.post("/api/ow/getData", (req,res) =>{
     params: {
       currency: data.currency,
       lastNdays: data.lastNdays,
+      apihost: process.env.WHISKER_API_HOST, 
+      api_key: process.env.WHISKER_KEY,
     }
   })
   .then(result => {
@@ -142,6 +144,14 @@ app.post("/api/newMonitor", (req, res) =>{
       name: "cronJobId",
       value: k8_object_name
     },
+    {
+      name: "apihost",
+      value: process.env.WHISKER_API_HOST,
+    },
+    {
+      name: "api_key",
+      value: process.env.WHISKER_KEY,
+    }
   ]).map(elm => `-p ${elm.name} "${elm.value}"`).join(" ")
   
   let container = {

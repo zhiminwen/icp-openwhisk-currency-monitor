@@ -6,7 +6,7 @@ function main(params) {
   let cCode = helper.getCurrencyCode(params.currency);
   let period = params.period
   let Ndays = params.lastNdays || period+1;
-  ow = helper.ow(true);
+  ow = helper.ow(params.apihost, params.api_key);
 
   return new Promise((resolve, reject) => {
     ow.actions

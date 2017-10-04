@@ -23,7 +23,7 @@ metadata:
   labels:
     name: {{ template "controller_statefulset_name" . }} 
 spec:
-  replicas: {{ .Values.controllerReplicaCount | default 1 }}
+  replicas: {{ .Values.controllerReplicaCount | default 2 }}
   serviceName: {{ template "controller_service_name" . }}
   template:
     metadata:
@@ -80,6 +80,8 @@ spec:
           value: {{ .Values.global.kafkaPort | default 9092 | quote }}
 
         # specific controller arguments
+        - name: "CONTROLLER_INSTANCES"
+          value: "2"
         - name: "CONTROLLER_OPTS"
           value: ""
         - name: "DEFAULTLIMITS_ACTIONS_INVOKES_PERMINUTE"
@@ -92,6 +94,22 @@ spec:
           value: "50"
         - name: "DEFAULTLIMITS_TRIGGERS_FIRES_PERMINUTE"
           value: "60"
+        - name: "LIMITS_ACTIONS_SEQUENCE_MAXLENGTH"
+          value: "50"
+        - name: "LIMITS_TRIGGERS_FIRES_PERMINUTE"
+          value: "60"
+        - name: "LIMITS_ACTIONS_INVOKES_PERMINUTE"
+          value: "60"
+        - name: "LIMITS_ACTIONS_INVOKES_CONCURRENTINSYSTEM"
+          value: "5000"
+        - name: "LIMITS_ACTIONS_INVOKES_CONCURRENT"
+          value: "30"
+        - name: "CONTROLLER_BLACKBOXFRACTION"
+          value: "0.10"
+        - name: "CONTROLLER_LOCALBOOKKEEPING"
+          value: "TRUE"
+        - name: "AKKA_CLUSTER_SEED_NODES"
+          value: "controller-0.controller.openwhisk controller-1.controller.openwhisk"
 
         # properties for DB connection
         - name: "DB_USERNAME"
@@ -112,18 +130,5 @@ spec:
           value: {{ template "actions_table" . }}
         - name: "DB_WHISK_AUTHS"
           value: {{ template "auths_table" . }}
-
-        - name: "LIMITS_ACTIONS_SEQUENCE_MAXLENGTH"
-          value: {{ .Values.controllerLimitsActionsSequenceMaxlength | default 1000 | quote }}
-        - name: "LIMITS_TRIGGERS_FIRES_PERMINUTE"
-          value: {{ .Values.controllerLimitsTriggersFiresPerminute | default 100 | quote }}
-        - name: "LIMITS_ACTIONS_INVOKES_PERMINUTE"
-          value: {{ .Values.controllerLimitsActionsInvokesPerminute | default 100 | quote }}
-        - name: "LIMITS_ACTIONS_INVOKES_CONCURRENTINSYSTEM"
-          value: {{ .Values.controllerLimitsActionsInvokesConcurrentinsystem | default 100 | quote }}
-        - name: "LIMITS_ACTIONS_INVOKES_CONCURRENT"
-          value: {{ .Values.controllerLimitsActionsInvokesConcurrent | default 100 | quote }}
-
-        - name: "CONTROLLER_INSTANCES"
-          value: {{ .Values.controllerInstances | default 1 | quote }} 
+	  
 

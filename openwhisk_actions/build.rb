@@ -2,9 +2,8 @@ require 'sshkit_addon'
 require 'dotenv'
 Dotenv.load
 
-password = "password"
-master_ip = %Q(192.168.xx.xx)
-master = SSHKit::Host.new :hostname => master_ip, :user => "username", :password => password
+master_ip = "192.168.5.100"
+master = SSHKit::Host.new :hostname => master_ip, :user => "ubuntu",:key => %q(C:\Tools\Kitty\mykey.openssh)
 
 @task_index=0
 def next_task_index
@@ -18,6 +17,28 @@ namespace "util" do
     cmd = args.cmd
     on master do |host|
        execute cmd
+    end
+  end
+end
+
+namespace "node" do
+  @task_index=0
+  desc "install nodejs"
+  task "#{next_task_index}_install_nodejs" do
+    on master do |host|
+      cmds = ShellCommandConstructor.construct_command %Q{
+        curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+      }
+
+      execute cmds
+    end
+  end
+
+  desc "install zip"
+  task "#{next_task_index}_install_zip" do
+    on master do |host|
+      execute %Q(sudo apt install -y zip)
     end
   end
 end

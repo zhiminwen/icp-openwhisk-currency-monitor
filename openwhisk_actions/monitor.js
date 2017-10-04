@@ -7,14 +7,16 @@ const funcMap = [
   {
     name: "Last Value",
     regexp: /\bvalue\b/i,
-    func: (ow, currency, matches) => {
+    func: (ow, apihost, api_key, currency, matches) => {
       return new Promise((resolve, reject) => {
         ow.actions.invoke({
           name: "FCEX-Mon/lastValue",
           result: true,
           blocking: true,
           params: {
-            currency: currency
+            currency: currency,
+            apihost: apihost,
+            api_key: api_key,
           }
         }).then(result => {
           resolve({value: result.value})
@@ -28,7 +30,7 @@ const funcMap = [
   {
     name: "Last sma for period of n days",
     regexp: /\b(sma_\d+)\b/i,
-    func: (ow, currency, matches) => {
+    func: (ow, apihost, api_key, currency, matches) => {
       let varName = matches[0]
       let period = matches[0].split(/_/)[1]
 
@@ -41,6 +43,8 @@ const funcMap = [
            params: {
              currency: currency,
              period: period,
+             apihost: apihost,
+             api_key: api_key,
            }
          })
          .then(result => {
@@ -58,7 +62,7 @@ const funcMap = [
   {
     name: "Last ema for period of n days",
     regexp: /\b(ema_\d+)\b/i,
-    func: (ow, currency, matches) => {
+    func: (ow, apihost, api_key, currency, matches) => {
       let varName = matches[0]
       let period = matches[0].split(/_/)[1]
 
@@ -71,6 +75,8 @@ const funcMap = [
            params: {
              currency: currency,
              period: period,
+             apihost: apihost,
+             api_key: api_key,
            }
          })
          .then(result => {
@@ -88,7 +94,7 @@ const funcMap = [
   {
     name: "Last histogram macd(12,26) - signal(9)",
     regexp: /\b(macd_\d+_\d+__signal_\d+)\b/i,
-    func: (ow, currency, matches) => {
+    func: (ow, apihost, api_key, currency, matches) => {
       let varName = matches[0]
       let args = _.chain(matches[0].split(/_+/)).map(e => _.toNumber(e)).filter(e => !_.isNaN (e)).value()
       
@@ -106,7 +112,9 @@ const funcMap = [
               currency: currency,
               fastPeriod: fastPeriod,
               slowPeriod: slowPeriod,
-              signalPeriod: signalPeriod
+              signalPeriod: signalPeriod,
+              apihost: apihost,
+              api_key: api_key,
             }
          })
          .then(result => {
@@ -142,7 +150,7 @@ function send2frontend(frontendUrl, topic, data){
 function main(params){
   console.log("monitor params:", params)
   let cCode = helper.getCurrencyCode(params.currency);
-  ow = helper.ow(true);
+  ow = helper.ow(params.apihost, params.api_key);
 
   let frontendUrl = params.frontendUrl
   let topic = params.topic
@@ -152,7 +160,7 @@ function main(params){
   _.each(funcMap, elm => {
     let matches
     if( (matches = elm.regexp.exec(formula))!==null){
-      promises.push(elm.func(ow, params.currency, matches))
+      promises.push(elm.func(ow, params.apihost, params.api_key, params.currency, matches))
     }
   })
   
